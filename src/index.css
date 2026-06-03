@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lato:wght@300;400;700&family=Cinzel:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #F5F0E8;
+    color: #333333;
+    font-family: 'Lato', sans-serif;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: #1B365D;
+    color: #DCCBB5;
+  }
+}
+
+@layer utilities {
+  .text-gradient-sand {
+    background: linear-gradient(135deg, #DCCBB5 0%, #c9aa8e 50%, #DCCBB5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-navy {
+    background: linear-gradient(135deg, #1B365D 0%, #2e5299 50%, #1B365D 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bg-glass {
+    background: rgba(27, 54, 93, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(220, 203, 181, 0.15);
+  }
+  .bg-glass-light {
+    background: rgba(245, 240, 232, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(220, 203, 181, 0.2);
+  }
+}
+
+/* Animated underline */
+.border-anim {
+  position: relative;
+}
+.border-anim::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0%;
+  height: 1px;
+  background: linear-gradient(90deg, #DCCBB5, #c9aa8e);
+  transition: width 0.4s ease;
+}
+.border-anim:hover::after { width: 100%; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #F5F0E8; }
+::-webkit-scrollbar-thumb { background: #1B365D; border-radius: 3px; }
+
+/* Hero overlay */
+.hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(27, 54, 93, 0.4) 0%,
+    rgba(27, 54, 93, 0.15) 40%,
+    rgba(27, 54, 93, 0.55) 80%,
+    rgba(27, 54, 93, 0.95) 100%
+  );
+}
+
+/* Section reveal animation — bi-directional */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* When element is scrolled past going up — fade down */
+.reveal.hidden-up {
+  opacity: 0;
+  transform: translateY(-30px);
+}
+/* When element is below viewport again — back to original state */
+.reveal.hidden-down {
+  opacity: 0;
+  transform: translateY(40px);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-left.hidden-up {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+.reveal-left.hidden-down {
+  opacity: 0;
+  transform: translateX(-40px);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.75s cubic-bezier(0.4, 0, 0.2, 1), transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right.hidden-up {
+  opacity: 0;
+  transform: translateX(40px);
+}
+.reveal-right.hidden-down {
+  opacity: 0;
+  transform: translateX(40px);
+}
+
+/* Sand shimmer */
+.shimmer-sand {
+  background: linear-gradient(90deg, #b58d6a 0%, #DCCBB5 25%, #c9aa8e 50%, #DCCBB5 75%, #b58d6a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* Ornament divider */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(220, 203, 181, 0.5), transparent);
+}
+
+/* Room card hover */
+.room-card:hover .room-img { transform: scale(1.07); }
+.room-card:hover .room-overlay { opacity: 1; }
+
+/* Stagger delays */
+.delay-100 { transition-delay: 0.1s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+.delay-500 { transition-delay: 0.5s; }
+.delay-600 { transition-delay: 0.6s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.6; }
+}
