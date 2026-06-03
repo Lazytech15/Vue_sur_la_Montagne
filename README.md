@@ -4,16 +4,9 @@
 
 ---
 
-<!-- 📸 Replace the three blocks below with your own screenshots -->
-<!-- Screenshot 1: Hero section / full-page overview -->
-<!-- Screenshot 2: Rooms section or gallery -->
-<!-- Screenshot 3: Services or contact section -->
-
-| ![Screenshot 1 — Hero](<img width="1919" height="960" alt="Hero_section" src="https://github.com/user-attachments/assets/f035875c-d8e8-4b33-8807-04fa2b861382" />) | ![Screenshot 2 — Rooms](<img width="1919" height="954" alt="Room_section" src="https://github.com/user-attachments/assets/a4c707ca-30ec-4e6a-8ad1-87bededf8b2e" />) | ![Screenshot 3 — Services](<img width="1919" height="950" alt="Services_section" src="https://github.com/user-attachments/assets/ed73b493-0062-44a9-b0b7-edf5101b859c" />) |
+| ![Hero Carousel](https://github.com/user-attachments/assets/f035875c-d8e8-4b33-8807-04fa2b861382) | ![Room Cards](https://github.com/user-attachments/assets/a4c707ca-30ec-4e6a-8ad1-87bededf8b2e) | ![Services Grid](https://github.com/user-attachments/assets/ed73b493-0062-44a9-b0b7-edf5101b859c) |
 |:---:|:---:|:---:|
 | *Hero Carousel* | *Room Cards* | *Services Grid* |
-
-> 💡 Place your screenshots inside a `/docs/` folder and rename them to match the filenames above.
 
 ---
 
