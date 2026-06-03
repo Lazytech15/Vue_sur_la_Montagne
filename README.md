@@ -1,10 +1,10 @@
-# 🏔️ Vue sur la Montagne Resort & Spa
+# 🏔️ Vue sur la Montagne Hotel
 
 > *A luxury hotel landing page set in the misty highlands of Tanay, Rizal, Philippines — where the Sierra Madre meets the sky.*
 
 ---
 
-| ![Hero Carousel](https://github.com/user-attachments/assets/f035875c-d8e8-4b33-8807-04fa2b861382) | ![Room Cards](https://github.com/user-attachments/assets/a4c707ca-30ec-4e6a-8ad1-87bededf8b2e) | ![Services Grid](https://github.com/user-attachments/assets/ed73b493-0062-44a9-b0b7-edf5101b859c) |
+| ![Hero Carousel](https://github.com/user-attachments/assets/f035875c-d8e8-4b33-8807-04fa2b861382) | ![Room Cards](https://github.com/user-attachments/assets/ae5c53d4-574c-46c7-8a00-3a159a0a1937) | ![Services Grid](https://github.com/user-attachments/assets/ed73b493-0062-44a9-b0b7-edf5101b859c) |
 |:---:|:---:|:---:|
 | *Hero Carousel* | *Room Cards* | *Services Grid* |
 
@@ -12,7 +12,7 @@
 
 ## 📌 About the Project
 
-**Vue sur la Montagne Resort & Spa** is a fully responsive luxury hotel landing page built with **React + Vite + Tailwind CSS**. It features a rich, cinematic design inspired by the lush mountains, river gorges, and highland culture of **Rizal Province, Philippines** — particularly the municipality of **Tanay**, gateway to Mt. Daraitan, the Tinipak River, and Laguna de Bay.
+**Vue sur la Montagne Hotel** is a fully responsive luxury hotel landing page built with **React + Vite + Tailwind CSS**. It features a rich, cinematic design inspired by the lush mountains, river gorges, and highland culture of **Rizal Province, Philippines** — particularly the municipality of **Tanay**, gateway to Mt. Daraitan, the Tinipak River, and Laguna de Bay.
 
 The project is structured as a single-page application (SPA) with smooth scroll navigation, animated section reveals, and an immersive full-screen hero carousel — all crafted to evoke the serenity and grandeur of a five-star mountain retreat.
 
@@ -197,5 +197,5 @@ vue-sur-la-montagne/
 
 ---
 
-*Built for Vue sur la Montagne Resort & Spa — Rizal, Philippines.*  
+*Built for Vue sur la Montagne Hotel — Rizal, Philippines.*  
 *A fictional luxury resort concept — all guest names, prices, and amenities are illustrative.*
