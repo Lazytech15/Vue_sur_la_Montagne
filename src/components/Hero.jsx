@@ -151,15 +151,15 @@ export default function Hero() {
           className={`flex flex-col sm:flex-row gap-4 mt-10 transition-all duration-1000 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
           style={{ transitionDelay: '800ms' }}
         >
-          <a
-            href="#booking"
+          <button
+            onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
             className="px-10 py-4 text-sm tracking-widest uppercase font-medium transition-all duration-300 hover:-translate-y-0.5"
-            style={{ background: '#DCCBB5', color: '#1B365D', fontFamily: 'Lato, sans-serif' }}
+            style={{ background: '#DCCBB5', color: '#1B365D', fontFamily: 'Lato, sans-serif', border: 'none', cursor: 'pointer' }}
             onMouseEnter={e => e.currentTarget.style.background = '#c9aa8e'}
             onMouseLeave={e => e.currentTarget.style.background = '#DCCBB5'}
           >
             Reserve Your Stay
-          </a>
+          </button>
           <a
             href="#rooms"
             className="px-10 py-4 text-sm tracking-widest uppercase transition-all duration-300 hover:-translate-y-0.5 bg-glass-light"

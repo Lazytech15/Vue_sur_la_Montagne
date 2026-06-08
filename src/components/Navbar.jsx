@@ -11,6 +11,11 @@ const navLinks = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const scrollToBooking = (e) => {
+  e.preventDefault();
+  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -165,6 +170,7 @@ export default function Navbar() {
               </a>
               <a
                 href="#booking"
+                onClick={scrollToBooking}
                 className="px-6 py-2.5 text-sm tracking-widest uppercase font-medium transition-all duration-300 hover:-translate-y-0.5"
                 style={{
                   fontFamily: 'Lato, sans-serif',
@@ -221,7 +227,7 @@ export default function Navbar() {
               ))}
               <a
                 href="#booking"
-                onClick={() => setMenuOpen(false)}
+                onClick={(e) => { scrollToBooking(e); setMenuOpen(false); }}
                 className="mt-2 px-6 py-3 text-sm tracking-widest uppercase text-center font-medium"
                 style={{ background: '#DCCBB5', color: '#1B365D', fontFamily: 'Lato, sans-serif' }}
               >

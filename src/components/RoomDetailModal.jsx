@@ -173,14 +173,18 @@ export default function RoomDetailModal({ room, onClose }) {
 
           {/* CTA */}
           <div className="flex gap-3">
-            <a
-              href="#booking"
-              onClick={onClose}
+            <button
+              onClick={() => {
+                onClose();
+                setTimeout(() => {
+                  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 50);
+              }}
               className="flex-1 flex items-center justify-center py-3.5 text-sm tracking-widest uppercase font-medium transition-opacity duration-200 hover:opacity-90"
-              style={{ background: '#1B365D', color: '#F5F0E8', fontFamily: 'Lato, sans-serif' }}
+              style={{ background: '#1B365D', color: '#F5F0E8', fontFamily: 'Lato, sans-serif', border: 'none', cursor: 'pointer' }}
             >
               Reserve This Room
-            </a>
+            </button>
             <button
               onClick={onClose}
               className="px-6 py-3.5 text-sm tracking-widest uppercase font-medium transition-colors duration-200"
