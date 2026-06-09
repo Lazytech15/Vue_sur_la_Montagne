@@ -40,7 +40,7 @@ export default function BookingSection() {
     try {
       // ── POST to Cloudflare Worker which starts the Workflow ──
       const response = await fetch(
-        `${import.meta.env.VITE_WORKER_URL ?? ''}/api/workflow/start`,
+        `https://vuesurlamontagne.eablao.workers.dev/api/workflow/start`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
