@@ -27,8 +27,7 @@ export default function ContactSection() {
       const res = await fetch(`${WORKER_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-        source: 'Vue sur la Montagne Hotel',
+        body: JSON.stringify({ ...form, source: 'Vue sur la Montagne Hotel' }),
       });
 
       const data = await res.json();
