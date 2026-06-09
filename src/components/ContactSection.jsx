@@ -1,14 +1,46 @@
 import { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
 
-export default function ContactSection() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-  const [sent, setSent] = useState(false);
+const WORKER_URL = 'https://sendtouchemail.eablao.workers.dev';
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSent(true);
-    setTimeout(() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }, 4000);
+export default function ContactSection() {
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault?.();
+    setError('');
+
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${WORKER_URL}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+        source: 'Vue sur la Montagne Hotel',
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Something went wrong.');
+
+      setSent(true);
+      setForm({ name: '', email: '', message: '' });
+    } catch (err) {
+      setError(err.message || 'Failed to send. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = "w-full px-4 py-3 text-sm outline-none transition-all duration-200 rounded-sm";
@@ -82,19 +114,23 @@ export default function ContactSection() {
                 <p className="text-sm" style={{ fontFamily: 'Lato, sans-serif', color: 'rgba(51,51,51,0.55)' }}>We'll reply within 24 hours.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  {['name', 'email'].map(field => (
+                  {[
+                    { field: 'name', label: 'Full Name', type: 'text', placeholder: 'Juan dela Cruz' },
+                    { field: 'email', label: 'Email', type: 'email', placeholder: 'juan@email.com' },
+                  ].map(({ field, label, type, placeholder }) => (
                     <div key={field} className="flex flex-col gap-2">
                       <label className="text-xs tracking-widest uppercase" style={{ fontFamily: 'Lato, sans-serif', color: 'rgba(51,51,51,0.5)' }}>
-                        {field === 'name' ? 'Full Name' : 'Email'}
+                        {label}
                       </label>
                       <input
-                        type={field === 'email' ? 'email' : 'text'}
-                        placeholder={field === 'name' ? 'Juan dela Cruz' : 'juan@email.com'}
+                        type={type}
+                        placeholder={placeholder}
                         value={form[field]}
-                        onChange={e => setForm({...form, [field]: e.target.value})}
+                        onChange={e => setForm({ ...form, [field]: e.target.value })}
                         required
+                        disabled={loading}
                         className={inputClass}
                         style={inputStyle}
                         onFocus={e => e.currentTarget.style.borderColor = 'rgba(27,54,93,0.4)'}
@@ -103,43 +139,47 @@ export default function ContactSection() {
                     </div>
                   ))}
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs tracking-widest uppercase" style={{ fontFamily: 'Lato, sans-serif', color: 'rgba(51,51,51,0.5)' }}>Subject</label>
-                  <input
-                    type="text"
-                    placeholder="Room inquiry, group booking, event..."
-                    value={form.subject}
-                    onChange={e => setForm({...form, subject: e.target.value})}
-                    className={inputClass}
-                    style={inputStyle}
-                    onFocus={e => e.currentTarget.style.borderColor = 'rgba(27,54,93,0.4)'}
-                    onBlur={e => e.currentTarget.style.borderColor = 'rgba(27,54,93,0.15)'}
-                  />
-                </div>
+
                 <div className="flex flex-col gap-2">
                   <label className="text-xs tracking-widest uppercase" style={{ fontFamily: 'Lato, sans-serif', color: 'rgba(51,51,51,0.5)' }}>Message</label>
                   <textarea
                     rows={5}
                     placeholder="Tell us how we can make your stay extraordinary..."
                     value={form.message}
-                    onChange={e => setForm({...form, message: e.target.value})}
+                    onChange={e => setForm({ ...form, message: e.target.value })}
                     required
+                    disabled={loading}
                     className={`${inputClass} resize-none`}
                     style={inputStyle}
                     onFocus={e => e.currentTarget.style.borderColor = 'rgba(27,54,93,0.4)'}
                     onBlur={e => e.currentTarget.style.borderColor = 'rgba(27,54,93,0.15)'}
                   />
                 </div>
+
+                {error && (
+                  <p className="text-sm" style={{ fontFamily: 'Lato, sans-serif', color: '#c0392b', margin: 0 }}>
+                    ⚠ {error}
+                  </p>
+                )}
+
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
+                  disabled={loading}
                   className="w-full flex items-center justify-center gap-3 px-8 py-4 text-sm tracking-widest uppercase font-medium transition-all duration-300 hover:-translate-y-0.5 rounded-sm"
-                  style={{ background: '#1B365D', color: '#DCCBB5', fontFamily: 'Lato, sans-serif' }}
-                  onMouseEnter={e => e.currentTarget.style.background = '#152b4a'}
-                  onMouseLeave={e => e.currentTarget.style.background = '#1B365D'}
+                  style={{
+                    background: loading ? 'rgba(27,54,93,0.5)' : '#1B365D',
+                    color: '#DCCBB5',
+                    fontFamily: 'Lato, sans-serif',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.7 : 1,
+                  }}
+                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#152b4a'; }}
+                  onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#1B365D'; }}
                 >
-                  <Send size={14} />Send Message
+                  <Send size={14} />
+                  {loading ? 'Sending...' : 'Send Message'}
                 </button>
-              </form>
+              </div>
             )}
           </div>
         </div>
