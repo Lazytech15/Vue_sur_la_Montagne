@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -12,44 +12,91 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import AdminDashboard from './components/AdminDashboard';
 import AdminLogin from './components/AdminLogin';
+import ClientPortal from './components/client/ClientPortal';
 import { useReveal } from './hooks/useReveal';
 
-// ─── Simple hash router (no react-router dependency needed) ───────
+// ─── Simple hash router ───────────────────────────────────────────
 function useHash() {
   const [hash, setHash] = useState(() => window.location.hash);
-  useCallback(() => {
+  useEffect(() => {
     const handler = () => setHash(window.location.hash);
     window.addEventListener('hashchange', handler);
     return () => window.removeEventListener('hashchange', handler);
-  }, [])();
+  }, []);
   return hash;
 }
 
-// ─── Auth (session-only — replace with real API call in production)
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = '12345';
+// ─── Role-based credentials ───────────────────────────────────────
+// Internal company accounts (back-office only)
+const STAFF_ACCOUNTS = [
+  {
+    username: 'superadmin',
+    password: 'super123',
+    role: 'superadmin',
+    name: 'Rafael Santos',
+    label: 'Super Admin',
+  },
+  {
+    username: 'admin',
+    password: 'admin123',
+    role: 'admin',
+    name: 'Maria Reyes',
+    label: 'Admin',
+  },
+  {
+    username: 'cashier',
+    password: 'cashier123',
+    role: 'cashier',
+    name: 'Juan dela Cruz',
+    label: 'Cashier',
+  },
+];
 
+// Guest/client accounts — booking holders only, never granted staff/company data
+const CLIENT_ACCOUNTS = [
+  {
+    username: 'client',
+    password: 'client123',
+    role: 'client',
+    name: 'Maria Santos',
+    label: 'Client',
+    email: 'maria@email.com',
+  },
+];
+
+const ACCOUNTS = [...STAFF_ACCOUNTS, ...CLIENT_ACCOUNTS];
+
+// ─── Auth hook ────────────────────────────────────────────────────
 function useAdminAuth() {
-  const [authed, setAuthed] = useState(
-    () => sessionStorage.getItem('sierra_admin') === '1'
-  );
+  const [session, setSession] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem('sierra_admin_session');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const login = (user, pass) => {
-    if (user === ADMIN_USER && pass === ADMIN_PASS) {
-      sessionStorage.setItem('sierra_admin', '1');
-      setAuthed(true);
+    const account = ACCOUNTS.find(
+      a => a.username === user && a.password === pass
+    );
+    if (account) {
+      const s = { role: account.role, name: account.name, label: account.label, email: account.email };
+      sessionStorage.setItem('sierra_admin_session', JSON.stringify(s));
+      setSession(s);
       return true;
     }
     return false;
   };
 
   const logout = () => {
-    sessionStorage.removeItem('sierra_admin');
-    setAuthed(false);
-    window.location.hash = '';
+    sessionStorage.removeItem('sierra_admin_session');
+    setSession(null);
+    window.location.hash = '#/admin';
   };
 
-  return { authed, login, logout };
+  return { authed: !!session, session, login, logout };
 }
 
 // ─── Public site ──────────────────────────────────────────────────
@@ -76,17 +123,18 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
   const handleDone = useCallback(() => setLoaded(true), []);
   const hash = useHash();
-  const { authed, login, logout } = useAdminAuth();
+  const { authed, session, login, logout } = useAdminAuth();
 
   const isAdminRoute = hash === '#/admin' || hash.startsWith('#/admin/');
 
-  // Admin route — show login or dashboard
+  const goToLanding = useCallback(() => { window.location.hash = ''; }, []);
+
   if (isAdminRoute) {
-    if (!authed) return <AdminLogin onLogin={login} />;
-    return <AdminDashboard onLogout={logout} />;
+    if (!authed) return <AdminLogin onLogin={login} onBack={goToLanding} />;
+    if (session?.role === 'client') return <ClientPortal onLogout={logout} session={session} />;
+    return <AdminDashboard onLogout={logout} session={session} />;
   }
 
-  // Public site
   return (
     <>
       {!loaded && <LoadingScreen onDone={handleDone} />}

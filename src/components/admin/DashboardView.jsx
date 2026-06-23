@@ -1,9 +1,22 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { Banknote, CreditCard, Clock, BedDouble, CalendarDays } from 'lucide-react';
 import { C, elev, fmt, fmtDate } from './tokens';
 import { Card, StatCard, StatusBadge, LoadingSpinner, ErrorBanner } from './AdminUI';
 
+function useWindowWidth() {
+  const [w, setW] = useState(window.innerWidth);
+  useEffect(() => {
+    const h = () => setW(window.innerWidth);
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
+  }, []);
+  return w;
+}
+
 export default function DashboardView({ bookings, onSelect, loading, error, onRetry }) {
+  const width = useWindowWidth();
+  const isMobile = width < 768;
+
   const stats = useMemo(() => {
     const pending   = bookings.filter(b => b.status === 'pending').length;
     const ongoing   = bookings.filter(b => b.status === 'ongoing').length;
@@ -31,9 +44,9 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
   return (
     <div>
       {/* Page header */}
-      <div style={{ marginBottom: 28 }}>
+      <div style={{ marginBottom: 24 }}>
         <h1 style={{
-          fontFamily:'Playfair Display,serif', fontSize: 28,
+          fontFamily:'Playfair Display,serif', fontSize: isMobile ? 22 : 28,
           color: C.navy, fontWeight: 600, marginBottom: 4, letterSpacing:'-0.01em'
         }}>Overview</h1>
         <p style={{ fontFamily:'Roboto,sans-serif', fontSize: 14, color: C.onSurf }}>
@@ -43,8 +56,13 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
 
       {error && <ErrorBanner message={error} onRetry={onRetry}/>}
 
-      {/* Stats grid */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))', gap:16, marginBottom:24 }}>
+      {/* Stats grid — 2-col on mobile, auto-fit on larger */}
+      <div style={{
+        display:'grid',
+        gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(auto-fit,minmax(190px,1fr))',
+        gap: isMobile ? 10 : 16,
+        marginBottom: isMobile ? 16 : 24
+      }}>
         <StatCard label="Total Revenue"    value={fmt(stats.revenue)}  sub="Paid bookings"        trend={12}  icon={Banknote}     accent={C.green} />
         <StatCard label="Unpaid Balance"   value={fmt(stats.unpaid)}   sub="Awaiting settlement"  trend={-4}  icon={CreditCard}   accent={C.amber} />
         <StatCard label="Pending Approval" value={stats.pending}       sub="Need your review"                 icon={Clock}        accent={C.amber} />
@@ -52,12 +70,17 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
         <StatCard label="Upcoming"         value={stats.confirmed}     sub="Confirmed bookings"               icon={CalendarDays} accent={C.navy}  />
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr', gap:16 }}>
+      {/* Two-column layout — stacks on mobile */}
+      <div style={{
+        display:'grid',
+        gridTemplateColumns: isMobile ? '1fr' : 'minmax(0,2fr) minmax(0,1fr)',
+        gap: isMobile ? 12 : 16
+      }}>
 
         {/* Recent bookings card */}
         <Card elevation={3}>
           <div style={{
-            padding:'18px 22px', borderBottom:`1px solid ${C.border}`,
+            padding:'16px 20px', borderBottom:`1px solid ${C.border}`,
             display:'flex', justifyContent:'space-between', alignItems:'center',
             background: C.surfaceVar
           }}>
@@ -70,8 +93,9 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
             {recent.map((b, i) => (
               <div key={b.id} onClick={() => onSelect(b)}
                 style={{
-                  padding:'13px 22px', display:'flex', alignItems:'center',
-                  gap:14, cursor:'pointer',
+                  padding: isMobile ? '11px 16px' : '13px 22px',
+                  display:'flex', alignItems:'center',
+                  gap: isMobile ? 10 : 14, cursor:'pointer',
                   borderBottom: i < recent.length-1 ? `1px solid ${C.border}` : 'none',
                   transition:'background 0.15s'
                 }}
@@ -79,26 +103,27 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                 {/* Avatar */}
                 <div style={{
-                  width:40, height:40, borderRadius:'50%',
+                  width:38, height:38, borderRadius:'50%',
                   background: C.containerLow,
                   display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0,
                   boxShadow: elev[1]
                 }}>
-                  <span style={{ fontFamily:'Playfair Display,serif', fontSize:15, color:C.navy, fontWeight:700 }}>
+                  <span style={{ fontFamily:'Playfair Display,serif', fontSize:14, color:C.navy, fontWeight:700 }}>
                     {b.guest[0]}
                   </span>
                 </div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{
-                    fontFamily:'Roboto,sans-serif', fontSize:14, fontWeight:600,
+                    fontFamily:'Roboto,sans-serif', fontSize: isMobile ? 13 : 14, fontWeight:600,
                     color:C.text, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis'
                   }}>{b.guest}</div>
-                  <div style={{ fontSize:12, color:C.muted, fontFamily:'Roboto,sans-serif' }}>
-                    {b.room} · {fmtDate(b.checkIn)}
+                  <div style={{ fontSize:11, color:C.muted, fontFamily:'Roboto,sans-serif',
+                    whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+                    {isMobile ? b.room.split(' ').slice(0,2).join(' ') : b.room} · {fmtDate(b.checkIn)}
                   </div>
                 </div>
                 <div style={{ textAlign:'right', flexShrink:0 }}>
-                  <div style={{ fontSize:14, fontWeight:700, fontFamily:'Roboto,sans-serif', color:C.navy, marginBottom:4 }}>
+                  <div style={{ fontSize: isMobile ? 12 : 14, fontWeight:700, fontFamily:'Roboto,sans-serif', color:C.navy, marginBottom:4 }}>
                     {fmt(b.total)}
                   </div>
                   <StatusBadge status={b.status} />
@@ -116,7 +141,7 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
         {/* Room demand card */}
         <Card elevation={3}>
           <div style={{
-            padding:'18px 22px', borderBottom:`1px solid ${C.border}`,
+            padding:'16px 20px', borderBottom:`1px solid ${C.border}`,
             background: C.surfaceVar
           }}>
             <span style={{
@@ -124,7 +149,7 @@ export default function DashboardView({ bookings, onSelect, loading, error, onRe
               textTransform:'uppercase', letterSpacing:'0.1em', color:C.navy
             }}>Room Demand</span>
           </div>
-          <div style={{ padding:'18px 22px' }}>
+          <div style={{ padding:'18px 20px' }}>
             {roomOcc.length === 0 && (
               <p style={{ fontFamily:'Roboto,sans-serif', fontSize:13, color:C.muted }}>No data yet.</p>
             )}

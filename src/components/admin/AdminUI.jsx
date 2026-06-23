@@ -96,7 +96,7 @@ export function StatCard({ label, value, sub, trend, icon: Icon, accent }) {
       </div>
       <div>
         <div style={{
-          fontSize: 30, fontWeight: 700,
+          fontSize: 'clamp(20px,4vw,30px)', fontWeight: 700,
           fontFamily: 'Playfair Display,serif',
           color: C.navy, lineHeight: 1, marginBottom: 4
         }}>{value}</div>
